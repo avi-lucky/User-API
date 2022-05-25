@@ -73,19 +73,19 @@ router.patch("/users/me", auth, async (req, res) => {
   }
 });
 
-// // Search Api
-// router.get("/users/search", async (req, res) => {
-//     var job = req.body.input
-//     jobModel.find({ $or: [{"title": new RegExp(job)}, { "company": new RegExp(job) }] }).exec(function (err, data) {
-//         console.log(data, 'line no.....200')
-//         if (err) {
-//             console.log("Line no 455", err);
-//             res.status(200).json({ 'status': 0, 'msg': 'something went wrong ', 'data': [] });
-//         }
-//         else {
-//             res.status(200).json({ 'status': 1, 'msg': 'Job list fetched successfully', 'data': data });
-//         }
-//     })
-// });
+// Search Api
+router.get("/users/search", async (req, res) => {
+  const username = req.boby;
+  const userData = await User.find({
+    $or: [
+      { firstName: req.body.username },
+      { lastName: req.body.username },
+      { email: req.body.username },
+      { number: req.body.username },
+    ],
+  });
+  console.log(userData);
+  res.send(userData);
+});
 
 module.exports = router;
