@@ -76,40 +76,16 @@ userSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-// userSchema.statics.findByCredentials = async (email, password) => {
-//   const user = await User.findOne({ email });
-
-//   if (!user) {
-//     throw new Error("Unable to login");
-//   }
-//   const isMatch = await bcrypt.compare(password, user.password);
-
-//   if (!isMatch) {
-//     throw new Error("Unable to login");
-//   }
-//   return user;
-// };
-
 // Hash the plain text password before saving
+userSchema.pre("save", async function (next) {
+  const user = this;
 
-bcrypt.genSalt(10).then((salt) => {
-  //   const user = this;
-  bcrypt.hash("password", salt).then((hash) => {
-    console.log(salt);
-    console.log(hash);
-    bcrypt.compare("password", hash).then((result) => console.log(result));
-  });
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+
+  next();
 });
-
-// userSchema.pre("save", async function (next) {
-//   const user = this;
-
-//   if (user.isModified("password")) {
-//     user.password = await bcrypt.hash(user.password, 8);
-//   }
-
-//   next();
-// });
 
 const User = mongoose.model("User", userSchema);
 
