@@ -79,9 +79,10 @@ userSchema.methods.generateAuthToken = async function () {
 // Hash the plain text password before saving
 userSchema.pre("save", async function (next) {
   const user = this;
+  const salt = 10;
 
   if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 8);
+    user.password = await bcrypt.hash(user.password, salt);
   }
 
   next();
